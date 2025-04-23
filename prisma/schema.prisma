@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model oma_User {
+  id                String            @id @default(cuid())
+  username          String            @unique
+  nickname          String?          
+  password          String            @db.VarChar(255)
+  profilePicture    oma_Image?        @relation("UserImage")
+  sentMessages      oma_Message[]     @relation("UserSentMessages")
+  recievedMessages  oma_Message[]     @relation("UserRecievedMessages")
+  contacts          oma_UserContact[] @relation("UserToContacts")
+  contactOf         oma_UserContact[] @relation("ContactToUsers")
+}
+
+model oma_UserContact {
+  id         String                   @id @default(cuid())
+  user       oma_User                 @relation("UserToContacts", fields: [userId], references: [id])
+  userId     String
+  contact    oma_User                 @relation("ContactToUsers", fields: [contactId], references: [id])
+  contactId  String
+  @@unique([userId, contactId]) // Prevent duplicate contact pairs
+}
+
+model oma_Image {
+  id                String            @id @default(cuid())
+  name              String
+  url               String
+  size              Int
+  publicId          String
+  createdAt         DateTime          @default(now())
+  user              oma_User?         @relation(fields: [userId], references: [id], name: "UserImage")
+  userId            String?           @unique
+}
+
+model oma_Message {
+  id                String            @id @default(cuid())
+  text              String            @db.VarChar(255)
+  fromUser          oma_User          @relation(fields: [fromUserId], references: [id], name: "UserSentMessages")
+  fromUserId        String            @db.VarChar(255) 
+  toUser            oma_User          @relation(fields: [toUserId], references: [id], name: "UserRecievedMessages")
+  toUserId          String            @db.VarChar(255)
+  createdAt         DateTime          @default(now())
+}
