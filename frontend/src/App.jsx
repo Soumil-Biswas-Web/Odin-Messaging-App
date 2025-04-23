@@ -16,10 +16,15 @@ function App() {
       <Header/>
       <Flash/>
       <div className={`flex w-full flex-1`}>
-        <div className={`${(location.pathname == "/")? "flex" : "hidden sm:flex"} sm:min-w-[200px] w-full sm:w-1/3`}>
-          {user.username && <ContactList/>}
+        <div className={`sm:min-w-[200px] w-full sm:w-1/3 ${(location.pathname != "/")? 
+          (user.username) ? "hidden sm:flex" : "hidden"          
+          :
+          (user.username) ? "flex" : "flex sm:hidden"
+        }`}>
+          {/* {user.username &&  <ContactList/>} */}
+          <ContactList/>
         </div>
-        <div className={`${(location.pathname == "/")? "hidden sm:block" : "block"} w-full border-l-2 border-slate-500`}>
+        <div className={`${(location.pathname == "/")? "hidden sm:block" : "block"} w-full sm:border-l-2 border-slate-500`}>
           <Outlet/>
         </div>
       </div>
