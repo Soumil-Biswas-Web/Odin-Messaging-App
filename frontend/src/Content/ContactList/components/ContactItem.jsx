@@ -14,7 +14,7 @@ export default function ContactItem({contact, messages}) {
         </Link>
         <div>
             <p className='font-semibold'>{contact.nickname || contact.username} </p>
-            <p>{messages[messages.length - 1].text}</p>
+            <p>{(messages[messages.length - 1].text) || "Click to begin!"}</p>
         </div>
     </Link>
   )
